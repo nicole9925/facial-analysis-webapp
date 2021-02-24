@@ -1,0 +1,35 @@
+.error-message {
+    color: white;
+    font-size: 1rem;
+    font: 'Open Sans', sans-serif;
+}
+.upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.image-container {
+    border-radius: 20px;
+    height: 350px;
+} 
+.pp-img {
+    border-radius: 20px;
+    height: 350px;
+}
+
+.loader {
+    display: block;
+    margin-left: 0px;
+}
+
+
+.image-container-ig {
+    border-radius: 20px;
+    height: 250px;
+} 
+
+.ig-container {
+    display: flex;
+    flex-direction: row;
+}

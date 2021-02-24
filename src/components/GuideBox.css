@@ -1,0 +1,35 @@
+.guide-bounding {
+    padding: 0.5em;
+}
+
+.guide-split {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.guide-selections {
+    margin-top: 1.5em;
+    width: 15em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.guide-inputs {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.options {
+    margin-top: 0em;
+}
+
+.submit {
+    margin-top: -1em;
+    padding: 1em;
+    background-color: var(--submit);
+    border: none;
+    color: white;
+}

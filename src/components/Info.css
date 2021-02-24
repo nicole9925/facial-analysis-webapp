@@ -1,0 +1,14 @@
+.background-container {
+    margin: 1em;
+    height: auto;
+    overflow: scroll;
+}
+.results-container {
+    margin: 5em;
+}
+
+.results {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

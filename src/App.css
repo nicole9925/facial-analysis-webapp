@@ -1,0 +1,157 @@
+/* || DEFINE VARIABLES */
+:root {
+  --primary: #070714;
+  --secondary: #1A1939;
+  --dimmed:#40406B;
+  --highlight: #4357FE;
+  --submit: #2829C7;
+
+  --radius: 20px;
+
+  --font: 'Open Sans', sans-serif;
+}
+
+/* || TYPOGRAPHY */
+
+html {
+  background: var(--primary);
+  font-family: var(--font);
+}
+
+/* || GENERAL STYLES */
+h2 {
+  color: white;
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+
+h3 {
+  color: white;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+h4 {
+  color: white;
+  font-weight: 100;
+  font-size: 1rem;
+  font-family: 'Courier New', monospace;
+}
+
+h5 {
+  color: white;
+  font-weight: 100;
+  font-size: 0.8rem;
+}
+
+p {
+  color: white;
+  font-size: 0.8rem;
+  font-weight: normal;
+}
+
+.box {
+  background-color: var(--secondary);
+  border-radius: var(--radius);
+}
+/* || STATIC ENTITIES */
+
+.header {
+  padding-bottom: 50px;
+}
+
+body {
+  margin: 0;
+}
+
+/* .page-title {
+  margin-left: 5%;
+  padding: 1%;
+} */
+
+/* || MAIN BODY */
+.main-container {
+  width: 100%;
+  height: 90vh;
+  margin-top: 2%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+}
+
+.text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.info-widget {
+  height: 40%;
+  width: 20rem;
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+}
+
+.stats-container {
+  display: flex;
+  flex-direction: column;
+  height: 52%;
+  justify-content: space-between;
+}
+
+.stats-widget1 {
+  height:46%;
+  width: 20rem;
+  flex-direction: column;
+  overflow: scroll;
+}
+
+.stats-widget2 {
+  height: 46%;
+  width: 20rem;
+  flex-direction: column;
+  overflow: scroll;
+}
+
+.interactive-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 50rem;
+  justify-content: space-between;
+}
+
+.guide-container {
+  height: 20%;
+  width: 100%;
+  /* border: 1px white solid; */
+}
+.image-upload-widget {
+  background-color: var(--primary);
+  height: 80%;
+  width: 50rem;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  overflow: scroll;
+  /* border: 1px white solid; */
+}
+.guide-bounding {
+  margin: 1em;
+}
+.guide {
+  color: white;
+  padding: 1em;
+}
+
+.graph-box {
+  margin: 1em;
+}
+
+/* || ATTRIBUTES */
+.submit:disabled {
+  background-color: #444452;
+  color: grey;
+}

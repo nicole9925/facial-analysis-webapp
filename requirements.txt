@@ -1,0 +1,15 @@
+Flask
+tensorflow
+cython
+cmake
+tensorflow
+Keras
+opencv-python
+urllib3
+Pillow
+dlib
+python-dotenv
+pandas
+matplotlib
+sklearn
+seaborn
