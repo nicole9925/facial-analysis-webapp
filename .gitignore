@@ -2,3 +2,8 @@
 .eslintcache
 node_modules/*
 models/
+venv/
+.env
+*.pyc
+__pycache__/
+instance/
