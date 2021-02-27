@@ -8,14 +8,14 @@ from PIL import Image
 import base64
 from io import BytesIO
 import shutil
-from preprocess_image import detect_face
+from src.api.preprocess_image import detect_face
 from io import BytesIO
 from keras.models import load_model
 import numpy as np
 import tensorflow as tf
 import cv2
 from werkzeug.exceptions import HTTPException
-from util import *
+from src.api.util import *
 import numpy as np
 
 UPLOAD_FOLDER = 'static/uploads/'
@@ -154,4 +154,4 @@ def encode_image(image):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
