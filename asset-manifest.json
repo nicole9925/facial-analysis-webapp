@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/facial-analysis-xai-webapp/static/css/main.1307d980.chunk.css",
+    "main.js": "/facial-analysis-xai-webapp/static/js/main.c822a8eb.chunk.js",
+    "main.js.map": "/facial-analysis-xai-webapp/static/js/main.c822a8eb.chunk.js.map",
+    "runtime-main.js": "/facial-analysis-xai-webapp/static/js/runtime-main.3b2991ef.js",
+    "runtime-main.js.map": "/facial-analysis-xai-webapp/static/js/runtime-main.3b2991ef.js.map",
+    "static/css/2.86e65bd8.chunk.css": "/facial-analysis-xai-webapp/static/css/2.86e65bd8.chunk.css",
+    "static/js/2.0a15cc2f.chunk.js": "/facial-analysis-xai-webapp/static/js/2.0a15cc2f.chunk.js",
+    "static/js/2.0a15cc2f.chunk.js.map": "/facial-analysis-xai-webapp/static/js/2.0a15cc2f.chunk.js.map",
+    "index.html": "/facial-analysis-xai-webapp/index.html",
+    "static/css/2.86e65bd8.chunk.css.map": "/facial-analysis-xai-webapp/static/css/2.86e65bd8.chunk.css.map",
+    "static/css/main.1307d980.chunk.css.map": "/facial-analysis-xai-webapp/static/css/main.1307d980.chunk.css.map",
+    "static/js/2.0a15cc2f.chunk.js.LICENSE.txt": "/facial-analysis-xai-webapp/static/js/2.0a15cc2f.chunk.js.LICENSE.txt",
+    "static/media/UploadIcon.svg": "/facial-analysis-xai-webapp/static/media/UploadIcon.469126df.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.3b2991ef.js",
+    "static/css/2.86e65bd8.chunk.css",
+    "static/js/2.0a15cc2f.chunk.js",
+    "static/css/main.1307d980.chunk.css",
+    "static/js/main.c822a8eb.chunk.js"
+  ]
+}
