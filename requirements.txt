@@ -2,7 +2,6 @@ Flask
 tensorflow-cpu
 cython
 cmake
-tensorflow
 Keras
 opencv-python
 urllib3
