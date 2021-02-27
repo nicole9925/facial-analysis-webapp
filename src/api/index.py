@@ -1,7 +1,7 @@
 from flask import json, Flask, render_template, make_response, send_file, request, redirect, flash, url_for, Response, jsonify
 import urllib.request
 from werkzeug.utils import secure_filename
-# from app import app
+from tensorflow.keras.applications.resnet_v2 import preprocess_input
 import os
 import sys
 from PIL import Image
@@ -13,10 +13,10 @@ from io import BytesIO
 from keras.models import load_model
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.applications.resnet_v2 import preprocess_input
 import cv2
 from werkzeug.exceptions import HTTPException
 from util import *
+import numpy as np
 
 UPLOAD_FOLDER = 'static/uploads/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
@@ -92,13 +92,14 @@ def preprocess(file_path):
 
     return gen_path, img_str, image
 
-def predict(image):
-    resized = preprocess_input(cv2.resize(np.array(image), (224, 224)).reshape(-1, 224, 224, 3))
-
+def predict(input_image):
+    arr = np.array(input_image)
+    # print(preprocess_input(arr), file=sys.stderr)
+    image = preprocess_input(cv2.resize(arr,(224,224))).reshape(-1, 224, 224, 3)
     # Race
     race_dict = {0: 'Black', 1: 'East Asian', 2: 'Latino/Hispanic', 3: 'Indian', 4: 'Middle Eastern', 5: 'SE Asian', 6: 'White'}
     race_model = load_model('models/race_v6.hdf5')
-    race_pred = race_model.predict(resized)
+    race_pred = race_model.predict(image)
     race = race_dict[np.argmax(race_pred)]
 
     race_percent = list(map(lambda x: round(x*100),race_pred[0]))
@@ -111,7 +112,7 @@ def predict(image):
     # Gender
     gender_dict = {0: "Female", 1: "Male"}
     gender_model = load_model('models/gender_v1.hdf5')
-    gender_pred = gender_model.predict(resized)
+    gender_pred = gender_model.predict(image)
     gender = gender_dict[np.argmax(gender_pred)]
 
     gender_percent = list(map(lambda x: round(x*100), gender_pred[0]))
@@ -123,7 +124,7 @@ def predict(image):
     # Age
     age_dict = {0: "0-2", 1: "10-19", 2: "20-29", 3: "3-9", 4: "30-39", 5: "40-49", 6: "50-59", 7: "60-69", 8: "more than 70"}
     age_model = load_model('models/age_v1.hdf5')
-    age_pred = age_model.predict(resized)
+    age_pred = age_model.predict(image)
     age = age_dict[np.argmax(age_pred)]
 
     age_percent = list(map(lambda x: round(x*100), age_pred[0]))
@@ -134,7 +135,9 @@ def predict(image):
 
     return race, gender, age, race_results, gender_results, age_results
 
-def generate_integrated_grad(image):
+def generate_integrated_grad(input_image):
+    arr = np.array(input_image)
+    image = preprocess_input(cv2.resize(arr,(224,224)))
     race = encode_image(integrated_grad_PIL(image, "race"))
     gender = encode_image(integrated_grad_PIL(image, "gender"))
     age = encode_image(integrated_grad_PIL(image, "age"))

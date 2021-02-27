@@ -1,12 +1,10 @@
 Flask
 tensorflow-cpu
 cython
-cmake
 Keras
 opencv-python
 urllib3
 Pillow
-dlib
 python-dotenv
 pandas
 matplotlib
