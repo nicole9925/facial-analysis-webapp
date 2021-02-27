@@ -8,5 +8,4 @@ Pillow
 python-dotenv
 pandas
 matplotlib
-sklearn
 seaborn

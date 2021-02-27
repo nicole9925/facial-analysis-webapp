@@ -14,8 +14,8 @@ from tensorflow import keras
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from PIL import Image
 from tensorflow.keras.applications import resnet_v2
-from sklearn.metrics import classification_report
-from sklearn.metrics import confusion_matrix
+# from sklearn.metrics import classification_report
+# from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
 import io
@@ -133,46 +133,46 @@ input
 output
     The class-specific barplot for precision, recall, f1-score, accuracy, and support
 """
-def create_stats(model, generator, target, label_path, mapping_path, save_path):
+# def create_stats(model, generator, target, label_path, mapping_path, save_path):
     
-    if not os.path.exists(save_path):
-        os.mkdir(save_path)
+#     if not os.path.exists(save_path):
+#         os.mkdir(save_path)
     
-    label_df = pd.read_csv(label_path)
-    with open(mapping_path) as f:
-        target_map = json.load(f)
-    f.close()
+#     label_df = pd.read_csv(label_path)
+#     with open(mapping_path) as f:
+#         target_map = json.load(f)
+#     f.close()
     
-    pred = model.predict(generator).argmax(axis = 1)
-    ground_truth = label_df[target].replace(target_map).values
-    cr = classification_report(ground_truth, pred, target_names = target_map.keys())
+#     pred = model.predict(generator).argmax(axis = 1)
+#     ground_truth = label_df[target].replace(target_map).values
+#     cr = classification_report(ground_truth, pred, target_names = target_map.keys())
     
-    with open(os.path.join(save_path, "class_report.txt"), "w") as f:
-        f.write(cr)
-    f.close()
+#     with open(os.path.join(save_path, "class_report.txt"), "w") as f:
+#         f.write(cr)
+#     f.close()
     
-    cr = classification_report(ground_truth, pred, target_names = target_map.keys(), output_dict = True)
+#     cr = classification_report(ground_truth, pred, target_names = target_map.keys(), output_dict = True)
     
-    result_df = pd.DataFrame(cr).T.iloc[:len(target_map), :]
-    result_df = result_df.reset_index().rename(columns= {"index": "category"})
+#     result_df = pd.DataFrame(cr).T.iloc[:len(target_map), :]
+#     result_df = result_df.reset_index().rename(columns= {"index": "category"})
 
-    cm = confusion_matrix(ground_truth, pred)
-    cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-    acc = cm.diagonal()
-    result_df["accuracy"] = acc
-    result_df.to_csv(os.path.join(save_path, "result_df.csv"), index = False)
+#     cm = confusion_matrix(ground_truth, pred)
+#     cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+#     acc = cm.diagonal()
+#     result_df["accuracy"] = acc
+#     result_df.to_csv(os.path.join(save_path, "result_df.csv"), index = False)
 
-    stat_names = ["precision", "recall", "f1-score", "accuracy", "support"]
+#     stat_names = ["precision", "recall", "f1-score", "accuracy", "support"]
     
-    for name in stat_names:
-        save_dir = os.path.join(save_path, name + "_barplot")
-        plt.figure(figsize = (12,8))
-        sns.barplot(x = "category", y= name, data= result_df,linewidth=2.5, 
-                    facecolor=(1, 1, 1, 0), edgecolor="0")
-        plt.title("{} across {}".format(name, target), fontsize = 20)
-        plt.xlabel(target, fontsize = 16)
-        plt.ylabel(name, fontsize= 16)
-        plt.savefig(save_dir)  
+#     for name in stat_names:
+#         save_dir = os.path.join(save_path, name + "_barplot")
+#         plt.figure(figsize = (12,8))
+#         sns.barplot(x = "category", y= name, data= result_df,linewidth=2.5, 
+#                     facecolor=(1, 1, 1, 0), edgecolor="0")
+#         plt.title("{} across {}".format(name, target), fontsize = 20)
+#         plt.xlabel(target, fontsize = 16)
+#         plt.ylabel(name, fontsize= 16)
+#         plt.savefig(save_dir)  
 
 """
 function to get the prediction from the model
