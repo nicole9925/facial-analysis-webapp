@@ -124,13 +124,13 @@ body {
 }
 
 .guide-container {
-  height: 20%;
+  height: 10%;
   width: 100%;
   /* border: 1px white solid; */
 }
 .image-upload-widget {
   background-color: var(--primary);
-  height: 80%;
+  height: 90%;
   width: 50rem;
   display:flex;
   justify-content: center;

@@ -8,14 +8,14 @@ from PIL import Image
 import base64
 from io import BytesIO
 import shutil
-from src.api.preprocess_image import detect_face
+from preprocess_image import detect_face
 from io import BytesIO
 from keras.models import load_model
 import numpy as np
 import tensorflow as tf
 import cv2
 from werkzeug.exceptions import HTTPException
-from src.api.util import *
+from util import *
 import numpy as np
 
 UPLOAD_FOLDER = 'static/uploads/'
@@ -55,10 +55,10 @@ def fileUpload():
 
     image_data = bytes(request.form.get('file'), encoding="ascii")
     im = Image.open(BytesIO(base64.b64decode(image_data))).convert('RGB')
-    im.save(filename)
-
+    im_array = np.array(im) 
+    # open_cv_image = im_array[:, :, ::-1].copy()
     # Preprocess image, make predictions
-    _, image_encoded, image = preprocess(filename)
+    _, image_encoded, image = preprocess(im_array)
     race, gender, age, race_results, gender_results, age_results = predict(image)
     race_ig, gender_ig, age_ig = generate_integrated_grad(image)
 
@@ -79,14 +79,14 @@ def fileUpload():
     response= json.dumps(data),
     mimetype='application/json'
         )
+    resp.headers.add("Access-Control-Allow-Origin", "*")
     return resp
 
-def preprocess(file_path):
+def preprocess(img_arr):
     gen_path = os.path.join(GEN_FOLDER, name)
 
     #Crop face
-    image = detect_face(file_path)
-    image.save(gen_path)
+    image = detect_face(img_arr)
 
     img_str = encode_image(image)
 
