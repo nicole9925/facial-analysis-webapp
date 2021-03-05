@@ -10,9 +10,9 @@ const accuracy =  {
                 "biased": {
                     "title": "Biased Accuracy (%)",
                     "data": [
-                        {"cat": "Race", "val": 40}, 
-                        {"cat": "Gender", "val": 80}, 
-                        {"cat": "Age", "val": 50}
+                        {"cat": "Race", "val": 45}, 
+                        {"cat": "Gender", "val": 87}, 
+                        {"cat": "Age", "val": 52}
                         ],
                     "colors": ["#00FFC7", "#00A3FF"]
                 }};

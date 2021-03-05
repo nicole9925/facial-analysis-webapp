@@ -35,7 +35,6 @@ class AccuracyGraph extends React.Component {
         const width = this.width;
         const title = this.props.plotTitle;
         const colors = this.props.colors;
-        console.log(colors)
 
         const svg = d3.select(`#${this.props.className}`)
 

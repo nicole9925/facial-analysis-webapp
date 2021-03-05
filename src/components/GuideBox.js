@@ -13,7 +13,8 @@ const GuideBox = (props) => {
             props.setProgress('Analysis')
             console.log(props.progress)
         } else if (expected === 'No') {
-            props.setProgress('Input')
+            // props.setProgress('Input')
+            props.setProgress('Analysis')
         }
     }
     
@@ -66,7 +67,20 @@ const GuideBox = (props) => {
             case 'Analysis':
                 return ( <>
                     <div className="guide-bounding">
-                        <Guide key = {props.progress} className="guide" progress={props.progress}></Guide>
+                        <div className="guide-split">
+                            <Guide key = {props.progress} className="guide" progress={props.progress}></Guide>
+                            <button className = "next-page submit" onClick={() => props.setProgress("bias")}>→</button>
+                        </div>
+                    </div>
+                </>
+                )
+            case 'bias':
+                return ( <>
+                    <div className="guide-bounding">
+                        <div className="guide-split">
+                            <button className = "prev-page submit" onClick={() => props.setProgress("Analysis")}>←</button>
+                            <Guide key = {props.progress} className="guide" progress={props.progress}></Guide>
+                        </div>
                     </div>
                 </>
                 )

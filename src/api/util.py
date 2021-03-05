@@ -14,240 +14,250 @@ from tensorflow import keras
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from PIL import Image
 from tensorflow.keras.applications import resnet_v2
-# from sklearn.metrics import classification_report
-# from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
 import io
 import matplotlib
+from grad_cam import *
 
 matplotlib.use('Agg')
 from model_trans import *
 
-
-"""
-Function to create generator from the csv file
-input
-    csv_path: path to the csv file
-    image_path: path to the image directory
-    target: the class of interest(age, gender, or race)
-    size: the size of the image
-    batch_size: the batch size
-    preprocess_input: The preprocess function to apply based on different transfer learning model. Make sure to change
-    the import statement above if wants to apply different transfer learning model
-    mapping_path: a directionary objects indicating how each category is being mapped to the respective integer representation
-    is_training: whether or not the generator is used as training
-
-output
-    a generator object ready to be trained
-"""
-def create_generator(csv_path, image_path, target, size, batch_size, mapping_path, preprocess_input, is_training):
-    
-    if is_training:
-        rotation_range = 30
-        horizontal_flip = True
-        vertical_flip = True
-        shuffle = True
+def grad_cam(PIL_img, target, lookup = None, to_save = False):
+    #loading models and params
+    if target == "race":
+        model_path = "models/race_v6.hdf5"
+        mapping_dict_rev = {0: 'Black', 1: 'East Asian', 2: 'Latino/Hispanic', 3: 'Indian', 4: 'Middle Eastern', 5: 'SE Asian', 6: 'White'}
+    elif target == "age":
+        model_path = "models/age_v1.hdf5"
+        mapping_dict_rev = {0: "0-2", 1: "10-19", 2: "20-29", 3: "3-9", 4: "30-39", 5: "40-49", 6: "50-59", 7: "60-69", 8: "more than 70"}
     else:
-        rotation_range = 0
-        horizontal_flip = False
-        vertical_flip = False
-        shuffle = False
+        model_path = "models/gender_v1.hdf5"
+        mapping_dict_rev = {0: "Female", 1: "Male"}
     
-    df = pd.read_csv(csv_path)
-    df["file"] = df["file"].apply(lambda x: os.path.join(image_path, x.split("/")[1]))
+    model = keras.models.load_model(model_path)
+    nb_classes = model.output.shape[1]
     
-    imgdatagen = ImageDataGenerator(
-        preprocessing_function = preprocess_input,
-        rotation_range = rotation_range,
-        horizontal_flip = horizontal_flip, 
-        vertical_flip = vertical_flip,
-        #rescale = 1.0 / 255
-    )
+    # #read the mapping
+    # mapping = os.path.join("./mapping", target + ".json")
+    # with open(mapping) as f:
+    #     mapping_dict = json.load(f)
+    # f.close()
     
-    data_generator = imgdatagen.flow_from_dataframe(
-        dataframe = df,
-        directory = None,
-        x_col = "file",
-        y_col = target,
-        target_size = (size, size),
-        batch_size = batch_size,
-        save_format = "jpg",
-        shuffle = shuffle
-    )
+    # mapping_dict = {key.lower():val for key, val in mapping_dict.items()}
+    # mapping_dict_rev = {val:key for key, val in mapping_dict.items()}
     
-    with open(mapping_path, "w") as f:
-        json.dump(data_generator.class_indices, f)
+    
+    #preprocess image
+    PIL_img = np.array(PIL_img).astype("float32")[None, :]
+    image = resnet_v2.preprocess_input(PIL_img)
+    preprocessed_input = image
+    
+    #inference 
+    if lookup == None:
+        output_prob = model.predict(image).squeeze()
+        pred_idx = output_prob.argmax()
+    else:
+        lookup = lookup.lower()
+        pred_idx = mapping_dict[lookup]
+    
+    #grad_cam
+    target_layer = lambda x: target_category_loss(x, pred_idx, nb_classes)
+    model.add(Lambda(target_layer,
+                     output_shape = target_category_loss_output_shape))
+
+    loss = K.sum(model.layers[-1].output)
+    conv_output =  [l for l in model.layers if l.name == "conv2d_7"][0].output
+    grads = normalize(K.gradients(loss, conv_output)[0])
+    gradient_function = K.function([model.layers[0].input], [conv_output, grads])
+
+    output, grads_val = gradient_function([image])
+    output, grads_val = output[0, :], grads_val[0, :, :, :]
+
+    weights = np.mean(grads_val, axis = (0, 1))
+    cam = np.ones(output.shape[0 : 2], dtype = np.float32)
+
+    for i, w in enumerate(weights):
+        cam += w * output[:, :, i]
+
+    cam = cv2.resize(cam, (224, 224))
+    cam = np.maximum(cam, 0)
+    heatmap = cam / np.max(cam)
+
+    #Return to BGR [0..255] from the preprocessed image
+    image = image[0, :]
+    image -= np.min(image)
+    image = np.minimum(image, 255)
+    # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) 
+
+    cam = cv2.applyColorMap(np.uint8(255*heatmap), cv2.COLORMAP_RAINBOW)
+    cam = np.float32(cam / 255) + np.float32(image)
+    cam = 255 * cam / np.max(cam)
+    cam = np.uint8(cam)
+    
+    register_gradient()
+    guided_model = modify_backprop(model, 'GuidedBackProp', model_path)
+    saliency_fn = compile_saliency_function(guided_model)
+    saliency = saliency_fn([preprocessed_input, 0])
+    gradcam = saliency[0] * heatmap[..., np.newaxis]
+    guided = deprocess_image(gradcam)
+ 
+    cam = Image.fromarray(cam)
+    guided = Image.fromarray(guided)
+    
+    
+    # if to_save:
+    #     cam.save("./grad_cam.png")
+    #     guided.save("./guided_cam.png")
+        
+    return cam, guided
+
+
+"""
+grad_cam function that converts a PIL image to NORMALIZED grad_cam heatmap
+input 
+    PIL_img: a PIL_img object PIL.Image.Image
+    
+    target: the target(e.g. race, age, gender)
+    
+    lookup: The particular category to lookup. For instance, given target = race, lookup = None
+            would display the heatmap with the highest probability. But if lookup = "white",
+            the function would display the heatmap with "white" category even if the category
+            does have have the highest probability.
+    
+    to_save: Whether or not to save the heatmap. If true, the heatmaps wil be saved in the current directory.
+   
+output
+     two image of object PIL.PngImagePlugin.PngImageFile: normalized grad_cam from unbiased and biased model
+"""
+def grad_cam_normalized(PIL_img, target, lookup = None, to_save = False):
+    
+    #loading models and params
+    if target == "race":
+        model_path = "./models/race/race_v6.hdf5"
+        model_path_biased = "./models/race/race_biased_v1.hdf5"
+    elif target == "age":
+        model_path = "./models/age/age_v1.hdf5"
+        model_path_biased = "./models/age/age_biased_v1.hdf5"
+    else:
+        model_path = "./models/gender/gender_v6.hdf5"
+        model_path_biased = "./models/gender/gender_biased_v1.hdf5"
+        
+    model = keras.models.load_model(model_path)
+    biased_model = load_model(model_path_biased)
+
+    nb_classes = model.output.shape[1]
+    
+    #read the mapping
+    mapping = os.path.join("./mapping", target + ".json")
+    with open(mapping) as f:
+        mapping_dict = json.load(f)
     f.close()
     
-    return data_generator
+    mapping_dict = {key.lower():val for key, val in mapping_dict.items()}
+    mapping_dict_rev = {val:key for key, val in mapping_dict.items()}
     
-
-"""
-function to visualize the training progress
-input
-    log_path: The csv file that logged the training progress
-    target: the name of the class (e.g. age, race, gender)
-output
-    the accuray and loss curve for both the training and validation
-"""
-def generate_curves(log_path, save_path):
     
-    if not os.path.exists(save_path):
-        os.mkdir(save_path)
-       
-    df = pd.read_csv(log_path)
-    path_to_viz = save_path
-    acc_name = os.path.join(path_to_viz, "acc_curve")
-    loss_name = os.path.join(path_to_viz, "loss_curve")
+    #preprocess image
+    PIL_img = np.array(PIL_img).astype("float32")[None, :]
+    image = resnet_v2.preprocess_input(PIL_img)
+    preprocessed_input = image
     
-    ax = plt.gca()
-    plt.plot(df["accuracy"])
-    plt.plot(df["val_accuracy"])
-    plt.title("Training Accuracy vs. Validation Accuracy")
-    plt.xlabel("epochs")
-    plt.ylabel("Accuracy")
-    ax.legend(['Train','Validation'],loc='lower right')
-    plt.savefig(acc_name)
-    plt.close()
-    
-    ax = plt.gca()
-    plt.plot(df["loss"])
-    plt.plot(df["val_loss"])
-    plt.title("Training loss vs. Validation loss")
-    plt.xlabel("epochs")
-    plt.ylabel("Loss")
-    ax.legend(['Train','Validation'],loc='upper right')
-    plt.savefig(loss_name)
-    
-
-"""
-Function to evaluate the model by calculating category-specific statistics
-input
-    model: a loaded model
-    generator: a generator that contains data
-    label_df: the csv file that contains the information of the data
-    target: the name of the class (e.g. age, race, gender)
-    target_map: The mapping of the class
-    save_path: where the plot should be saved
-output
-    The class-specific barplot for precision, recall, f1-score, accuracy, and support
-"""
-# def create_stats(model, generator, target, label_path, mapping_path, save_path):
-    
-#     if not os.path.exists(save_path):
-#         os.mkdir(save_path)
-    
-#     label_df = pd.read_csv(label_path)
-#     with open(mapping_path) as f:
-#         target_map = json.load(f)
-#     f.close()
-    
-#     pred = model.predict(generator).argmax(axis = 1)
-#     ground_truth = label_df[target].replace(target_map).values
-#     cr = classification_report(ground_truth, pred, target_names = target_map.keys())
-    
-#     with open(os.path.join(save_path, "class_report.txt"), "w") as f:
-#         f.write(cr)
-#     f.close()
-    
-#     cr = classification_report(ground_truth, pred, target_names = target_map.keys(), output_dict = True)
-    
-#     result_df = pd.DataFrame(cr).T.iloc[:len(target_map), :]
-#     result_df = result_df.reset_index().rename(columns= {"index": "category"})
-
-#     cm = confusion_matrix(ground_truth, pred)
-#     cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-#     acc = cm.diagonal()
-#     result_df["accuracy"] = acc
-#     result_df.to_csv(os.path.join(save_path, "result_df.csv"), index = False)
-
-#     stat_names = ["precision", "recall", "f1-score", "accuracy", "support"]
-    
-#     for name in stat_names:
-#         save_dir = os.path.join(save_path, name + "_barplot")
-#         plt.figure(figsize = (12,8))
-#         sns.barplot(x = "category", y= name, data= result_df,linewidth=2.5, 
-#                     facecolor=(1, 1, 1, 0), edgecolor="0")
-#         plt.title("{} across {}".format(name, target), fontsize = 20)
-#         plt.xlabel(target, fontsize = 16)
-#         plt.ylabel(name, fontsize= 16)
-#         plt.savefig(save_dir)  
-
-"""
-function to get the prediction from the model
-input
-    img_path: The path to the image
-    model_path: The path to the model
-    mapping_path: The mapping
-out
-    The prediction made by the model
-"""
-
-"""
-function to make a single prediction of an image
-input
-    img_path: The path to the image
-    model_path: The path to the model
-    mapping_path: The mapping between labels(in number) and categories
-    result_df_path: The aggregate results
-output
-    out: The prediction
-    pred_prob: The accuracy of making the out prediction
-    aggregate_acc: The accuracy of the aggregate category
-
-***NOTE: result_df_path can be found in(assuming race):
-    "./visualization/race/stats/result_df.csv"
-"""
-def get_prediction(img_path, model_path, mapping_path, result_df_path):
-    img_arr = detect_face(img_path)
-    if img_arr.shape != (1, 224,224,3):
-        print("Wrong input size")
-        return
+    #inference 
+    if lookup == None:
+        output_prob = model.predict(image).squeeze()
+        output_prob_biased = biased_model.predict(image).squeeze()
+        pred_idx = output_prob.argmax()
+        pred_idx_biased = output_prob_biased.argmax()
     else:
-        model = keras.models.load_model(model_path)
+        lookup = lookup.lower()
+        pred_idx = mapping_dict[lookup]
+        pred_idx_biased = mapping_dict[lookup]
         
-        with open(mapping_path) as f:
-            mapping = json.load(f)
-        f.close()
-        mapping = {val:key for key, val in mapping.items()}
-        pred = model.predict(img_arr).squeeze()
-        out = mapping[pred.argmax()]
-        pred_prob = np.round(pred[pred.argmax()] * 100, 4)
-        
-        result_df = pd.read_csv(result_df_path)
-        aggregate_acc = np.round(result_df[result_df["category"] == out]["accuracy"].values[0] * 100, 4)
     
-    return out, pred_prob, aggregate_acc
+    #grad_cam
+    target_layer = lambda x: target_category_loss(x, pred_idx, nb_classes)
+    biased_target_layer = lambda x: target_category_loss(x, pred_idx_biased, nb_classes)
+    
+    model.add(Lambda(target_layer,
+                     output_shape = target_category_loss_output_shape))
+    
+    biased_model.add(Lambda(biased_target_layer,
+                     output_shape = target_category_loss_output_shape))
 
-"""
-Convert a Matplotlib figure to a PIL Image and return it
-"""
+    loss = K.sum(model.layers[-1].output)
+    biased_loss = K.sum(biased_model.layers[-1].output)
+    
+    conv_output =  [l for l in model.layers if l.name == "conv2d_7"][0].output
+    biased_conv_output =  [l for l in biased_model.layers if l.name == "conv2d_7"][0].output
+    
+    
+    grads = normalize(K.gradients(loss, conv_output)[0])
+    biased_grads = normalize(K.gradients(biased_loss, biased_conv_output)[0])
+    
+    gradient_function = K.function([model.layers[0].input], [conv_output, grads])
+    biased_gradient_function = K.function([biased_model.layers[0].input], [biased_conv_output, biased_grads])
+    
+
+    output, grads_val = gradient_function([image])
+    biased_output, biased_grads_val = biased_gradient_function([image])
+    
+    output, grads_val = output[0, :], grads_val[0, :, :, :]
+    biased_output, biased_grads_val = biased_output[0, :], biased_grads_val[0, :, :, :]
+    
+
+    weights = np.mean(grads_val, axis = (0, 1))
+    biased_weights = np.mean(biased_grads_val, axis = (0, 1))
+    
+    cam = np.ones(output.shape[0 : 2], dtype = np.float32)
+    biased_cam = np.ones(biased_output.shape[0 : 2], dtype = np.float32)
+
+    for i, w in enumerate(weights):
+        cam += w * output[:, :, i]
+    for i, w in enumerate(biased_weights):
+        biased_cam += w * biased_output[:, :, i]
+
+    cam = cv2.resize(cam, (224, 224))
+    biased_cam = cv2.resize(biased_cam, (224, 224))
+    cam = np.maximum(cam, 0)
+    biased_cam = np.maximum(biased_cam, 0)
+
+    max_arr = np.concatenate([cam,biased_cam])
+    max_norm = np.max(max_arr)
+
+    heatmap = cam / max_norm
+    biased_heatmap = biased_cam/ max_norm
+    
+    #Return to BGR [0..255] from the preprocessed image
+    image = image[0, :]
+    image -= np.min(image)
+    image = np.minimum(image, 255)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+    cam = cv2.applyColorMap(np.uint8(255*heatmap), cv2.COLORMAP_JET)
+    biased_cam = cv2.applyColorMap(np.uint8(255*biased_heatmap), cv2.COLORMAP_JET)
+
+    cam = np.float32(cam / 255) + np.float32(image)
+    biased_cam = np.float32(biased_cam / 255) + np.float32(image)
+    
+    cam = 255 * cam / np.max(cam)
+    biased_cam = 255 * biased_cam / np.max(biased_cam)
+    
+    cam = np.uint8(cam)
+    biased_cam = np.uint8(biased_cam)
+    
+    cam = Image.fromarray(cam)
+    biased_cam = Image.fromarray(biased_cam)
+    
+    return cam, biased_cam
+
 def fig2img(fig):
+    """Convert a Matplotlib figure to a PIL Image and return it"""
     buf = io.BytesIO()
     fig.savefig(buf)
     buf.seek(0)
     img = Image.open(buf)
     return img
-
-"""
-functions to load the model with weights
-
-in: weight_name of the checkpoint
-out: the model loaded with weights
-"""
-def load_model_with_weights(weight_name):
-    if "age" in weight_name:
-        num_classes = 9
-    elif "race" in weight_name:
-        num_classes = 7
-    else:
-        num_classes = 2
-    
-    model = build_model(num_classes = num_classes)
-    model.load_weights(weight_name)
-    
-    return model
 
 """
 Another version of integrated_grad implementation that just shows the heatmap with the highest

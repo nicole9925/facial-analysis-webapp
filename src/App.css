@@ -150,6 +150,10 @@ body {
   margin: 1em;
 }
 
+#unbiasedPie {
+  margin-left: 0;
+}
+
 /* || ATTRIBUTES */
 .submit:disabled {
   background-color: #444452;

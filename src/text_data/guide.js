@@ -14,7 +14,7 @@ const guide =  {"getUpload": {
     "eraseDelay": 10000000,
     "typingDelay": 100,
     "eraseSpeed": 30},
-"Input": {"text": "You got us! Please input the correct information.", 
+"Input": {"text": "Sorry! This page is in construction.", 
     "speed": 20,
     "eraseDelay": 10000000,
     "typingDelay": 100,
@@ -23,6 +23,14 @@ const guide =  {"getUpload": {
 "speed": 20,
 "eraseDelay": 10000000,
 "typingDelay": 100,
-"eraseSpeed": 30}};
+"eraseSpeed": 30},
+
+"bias": {"text": "We mentioned in the last slide that biased data yields considerable effects in a model. Here's what our model sees when given biased data vs. unbiased data. Hover over the images to read their captions!", 
+"speed": 20,
+"eraseDelay": 10000000,
+"typingDelay": 100,
+"eraseSpeed": 30}
+
+};
 
 export default {guide};

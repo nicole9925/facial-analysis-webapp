@@ -1,6 +1,7 @@
 import React from 'react'
 import './Info.css'
 import modelInfo from '../text_data/modelInfo'
+import bias from '../text_data/bias'
 
 const Info = (props) => {
     var progress = props.progress;
@@ -65,6 +66,17 @@ const Info = (props) => {
 
                         <h3>{modelInfo.modelInfo[2]["header"]}</h3>
                         <p>{modelInfo.modelInfo[2]["body"]}</p>
+                    </div>
+                </>
+                )
+            case 'bias':
+                return ( <>
+                    <div className="background-container">
+                        <h3>{bias.bias[1]["header"]}</h3>
+                        <p>{bias.bias[1]["body"]}</p>
+
+                        <h3>{bias.bias[2]["header"]}</h3>
+                        <p>{bias.bias[2]["body"]}</p>
                     </div>
                 </>
                 )

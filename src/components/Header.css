@@ -12,14 +12,16 @@
     margin-left: 3em;
     white-space: nowrap;
     overflow: scroll;
+    width: 30%;
 }
 .nav-container {
     margin-right: 0.5rem;
     display: flex;
     flex-direction: row;
+    width: 50%;
 
 }
 
 .title-labels {
-    margin: 3em;
+    margin: 1em;
 }

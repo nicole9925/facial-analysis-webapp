@@ -7,6 +7,8 @@ import GuideBox from './components/GuideBox'
 import AccuracyGraph from './components/AccuracyGraph'
 import background from './text_data/background'
 import accuracy from './text_data/accuracy'
+import GraphWidget from './components/GraphWidget'
+import GraphWidget2 from './components/GraphWidget2'
 
 function Home() {
 
@@ -23,25 +25,37 @@ function Home() {
     <div className="main-container">
       <div className="text-container">
         <div className="info-widget box">
-          <Info data={data} progress={progress}></Info>
+          <Info key = {progress} data={data} progress={progress}></Info>
           </div>
           <div className="stats-container">
             <div className="stats-widget1 box">
               <div className="graph-box">
-                <AccuracyGraph className="bar" 
+                {/* <AccuracyGraph className="bar" 
                                 key = {plotData1["title"]}
                                 data ={plotData1["data"]} 
                                 plotTitle = {plotData1["title"]} 
-                                colors={plotData1["colors"]} />
+                                colors={plotData1["colors"]} /> */}
+                  <GraphWidget 
+                              className="pie1"
+                              key = {progress}
+                              plotData1 = {plotData1}
+                              progress = {progress}
+                  />
               </div>
             </div>
             <div className="stats-widget2 box">
               <div className="graph-box">
-                <AccuracyGraph className="bar2" 
+                {/* <AccuracyGraph className="bar2" 
                                     key = {plotData2["title"]}
                                     data ={plotData2["data"]} 
                                     plotTitle = {plotData2["title"]} 
-                                    colors={plotData2["colors"]} />
+                                    colors={plotData2["colors"]} /> */}
+                      <GraphWidget2 
+                              className="pie2"
+                              key = {progress}
+                              plotData2 = {plotData2}
+                              progress = {progress}
+                      />
               </div>
             </div>
           </div>
@@ -54,7 +68,8 @@ function Home() {
           </GuideBox>
         </div>
         <div className="image-upload-widget box">
-            <ImageComponent className="image-upload" 
+            <ImageComponent   
+                            className="image-upload" 
                             setData={setData} 
                             setProgress={setProgress} 
                             progress={progress} data={data} 

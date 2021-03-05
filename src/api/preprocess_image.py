@@ -49,7 +49,7 @@ def detect_face(img, default_max_size=800,size = 224, padding = 0.25):
     image = dlib.get_face_chips(img, faces, size=size, padding = padding)[0]
 
     image = Image.fromarray(image, 'RGB')
-
+    # print(image, file=sys.stderr)
     return image
 
 # from PIL import Image
