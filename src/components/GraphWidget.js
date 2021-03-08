@@ -68,6 +68,15 @@ const GraphWidget = (props) => {
                     colors={props.plotData1["colors"]} />
                 </>
             )
+        case "conclusion":
+            return(
+                <>
+                    <div className="conclusion-info">
+                        <p><b>Creators:</b> <br/><br/>Nicole Lee, Michael Hung, Sudiksha Sarvepalli</p>
+                        <p><b>About:</b> <br/><br/>This web application was created as an undergraduate senior project for the data science department at University of California, San Diego. It is categorized under the Explainable AI domain under Dr. Jürgen P. Schulze.</p>
+                    </div>
+                </>
+            )
         default:
             return null
 

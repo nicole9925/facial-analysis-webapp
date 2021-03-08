@@ -11,6 +11,9 @@ import white_biased from '../static/white_biased.png'
 import EA_unbiased from '../static/EA_unbiased.png'
 import EA_biased from '../static/EA_biased.png'
 import accuracy from '../text_data/accuracy'
+import nicole from '../static/nicole.png'
+import sudiksha from '../static/sudiksha.png'
+import michael from '../static/michael.png'
 
 const UploadComponent = props => (
     <form>
@@ -44,6 +47,7 @@ const Upload = (props) => {
     const [raceBP, setRaceBP] = useState(null);
     const [genderBP, setGenderBP] = useState(null);
     const [ageBP, setAgeBP] = useState(null);
+    const [results, setResults] = useState(null);
 
     const [vizType, setVizType] = useState("grad");
 
@@ -76,7 +80,18 @@ const Upload = (props) => {
 
         }
     }
-    
+    // function usePrevious(value) {
+    //     const ref = useRef();
+    //     useEffect(() => {
+    //       ref.current = value;
+    //     });
+    //     return ref.current;
+    //   }
+    // const prevProgress = usePrevious(props.progress)
+    // useEffect(() => {
+        
+
+    // })
     const onImage = async (failedImages, successImages) => {
         try {
             setDisabled(false)
@@ -111,7 +126,7 @@ const Upload = (props) => {
         const name = parts[1].split('=')[1];
 
         const resp = await UploadService.UploadToServer(img, name)
-        console.log(resp)
+        setResults(resp)
         setImageUrl('data:image/jpeg;base64,' + resp.pp_img)
 
         setRaceIG( 'data:image/jpeg;base64,' + resp.race_ig)
@@ -191,8 +206,8 @@ const Upload = (props) => {
                 return (<>
                     <div className="grid-biased">
                         <div className="viz-headers">
-                            <h2>Unbiased</h2>
-                            <h2>Biased</h2>
+                            <p><u>Unbiased</u></p>
+                            <p><u>Biased</u></p>
                         </div>
                         <div className="g-container">
                             <div className="wrapper">
@@ -200,7 +215,9 @@ const Upload = (props) => {
                                     <img className = "image-container-ig" src={indian_unbiased} alt="Indian Unbiased"></img>
                                     <div className="caption-wrapper">
                                         <p>Prediction: Indian</p>
-                                        <p>As you can see,</p>
+                                        <p>
+                                            This prediction was correct. We can see that salient feature identified by Grad-CAM was the eyes.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -209,6 +226,13 @@ const Upload = (props) => {
                                     <img className = "image-container-ig" src={indian_biased} alt="Indian Biased"></img>
                                     <div className="caption-wrapper">
                                         <p>Prediction: Latino/Hispanic</p>
+                                        <p>
+                                            This is an image of a young Indian girl. The fair model predicted the race correctly as Indian but the biased model predicted Latino Hispanic. 
+                                            In this example, the Grad-CAM results for the fair model shows a strong focus on the eye region and the biased model covers a similar region but 
+                                            the activation is not as strong. The Indian race was very underrepresented in the biased dataset which can be depicted by the performance of the biased 
+                                            and unbiased models after applying Grad-cam. 
+                                        </p>
+
                                     </div>
                                 </div>
                             </div>
@@ -219,6 +243,10 @@ const Upload = (props) => {
                                         <img className = "image-container-ig" src={white_unbiased} alt="White Unbiased"></img>
                                         <div className="caption-wrapper">
                                             <p>Prediction: White</p>
+                                            <p>
+                                            This image is of a person who’s ground-truth label is White. The fair model predicted White and shows that the model made its prediction by focusing on the region around the eye.
+                                            These results depict that the fair model was a stronger model in this case since it had stronger activation weights for the highlighted features than the biased model which seems to be the weaker model. 
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -227,6 +255,9 @@ const Upload = (props) => {
                                         <img className = "image-container-ig" src={white_biased} alt="White Biased"></img>
                                         <div className="caption-wrapper">
                                             <p>Prediction: White</p>
+                                            <p>
+                                            Unlike the unbiased model, the biased model, which also predicted White, shows a slight amount of activation in the same eye region. The biased model seems to have weaker activation since in the biased dataset White is the overrepresented race and therefore could be assumed as a default prediction which led to the model not picking out specific salient features to make its classification. This example shows how even when two models make the same prediction, users can use Grad-CAM to distinguish the stronger and weaker model. 
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -237,6 +268,9 @@ const Upload = (props) => {
                                         <img className = "image-container-ig" src={EA_unbiased} alt="EA Unbiased"></img>
                                         <div className="caption-wrapper">
                                             <p>Prediction: East Asian</p>
+                                            <p>
+                                            The Grad-CAM shows that the fair model for our East Asian example seems to have focused on the inner region of the eye.
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -244,11 +278,53 @@ const Upload = (props) => {
                                         <img className = "image-container-ig" src={EA_biased} alt="EA Biased"></img>
                                         <div className="caption-wrapper">
                                             <p>Prediction: East Asian</p>
+                                            <p>
+                                                There is not much activation in the biased model example. While this specific prediction was correct, the model's inability
+                                                to detect salient features could explain why the biased model’s accuracy for this East Asians. 
+                                            </p>
+
                                         </div>
                                     </div>
                                 </div>
                     </div>
                 </>)
+            case "conclusion":
+                return (<>
+                <div className="image-container">
+                <div className="g-container">
+                        <div className="wrapper">
+                                <div className="viz-with_cap_us">
+                                        <img className = "image-container-us" src={michael} alt="Michael"></img>
+                                        <div className="caption-wrapper">
+                                            <p>Models, Integrated Gradient Visualization</p>
+                                            <p>
+                                            Contact: <a href="https://www.linkedin.com/in/michael-m459/">here</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="viz-with_cap_us">
+                                        <img className = "image-container-us" src={sudiksha} alt="Sudiksha"></img>
+                                        <div className="caption-wrapper">
+                                            <p>Grad-CAM Visualization</p>
+                                            <p>
+                                                Contact: <a href="https://www.linkedin.com/in/sudiksha-sarvepalli/">here</a>
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                    <div className="viz-with_cap_us">
+                                        <img className = "image-container-us" src={nicole} alt="Nicole"></img>
+                                        <div className="caption-wrapper">
+                                            <p>Web Application</p>
+                                            <p>
+                                            Contact: <a href="www.linkedin.com/in/nicole-mandy-lee">here</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                         </div>
+            </>)
             default:
                 return <>
                     <div className="image-container">

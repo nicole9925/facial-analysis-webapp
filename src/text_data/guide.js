@@ -26,7 +26,12 @@ const guide =  {"getUpload": {
 "eraseSpeed": 30},
 
 "bias": {"text": "We mentioned in the last slide that biased data yields considerable effects in a model. Here's what our model sees when given biased data vs. unbiased data. Hover over the images to read their captions!", 
-"speed": 20,
+"speed": 10,
+"eraseDelay": 10000000,
+"typingDelay": 100,
+"eraseSpeed": 30},
+"conclusion": {"text": "And...that's a wrap. Thanks for visiting - we hope you were able to get some insight into how machine learning for facial analysis tools see you!", 
+"speed": 10,
 "eraseDelay": 10000000,
 "typingDelay": 100,
 "eraseSpeed": 30}

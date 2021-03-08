@@ -9,7 +9,9 @@ const Header = (props) => {
                 "Input": "→", 
                 "Analysis": "Analysis",
                 "Transition": "→", 
-                "bias": "Bias"
+                "bias": "Bias",
+                "Transition2": "→", 
+                "conclusion": "Conclusion"
             };
     let title = props.progress;
     const activeStyle = {color: '#ffffff'}

@@ -44,7 +44,7 @@ h5 {
   font-size: 0.8rem;
 }
 
-p {
+p, li {
   color: white;
   font-size: 0.8rem;
   font-weight: normal;
@@ -124,13 +124,14 @@ body {
 }
 
 .guide-container {
-  height: 10%;
+  height: 15%;
   width: 100%;
+  overflow: scroll;
   /* border: 1px white solid; */
 }
 .image-upload-widget {
   background-color: var(--primary);
-  height: 90%;
+  height: 85%;
   width: 50rem;
   display:flex;
   justify-content: center;
@@ -148,6 +149,7 @@ body {
 
 .graph-box {
   margin: 1em;
+  margin-left:0.5em;
 }
 
 #unbiasedPie {
@@ -158,4 +160,17 @@ body {
 .submit:disabled {
   background-color: #444452;
   color: grey;
+}
+
+.desktop-warning {
+  display: flex;
+  justify-content: space-around;
+}
+
+.conclusion-info {
+  margin: 1em;
+}
+
+a {
+  color:white;
 }

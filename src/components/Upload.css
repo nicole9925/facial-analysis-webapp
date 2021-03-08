@@ -17,7 +17,9 @@
     border-radius: 20px;
     height: 350px;
 }
-
+img {
+    border: 1px solid white;
+}
 .loader {
     display: block;
     margin-left: 0px;
@@ -39,7 +41,10 @@
     border-radius: 20px;
     height: 200px;
 } 
-
+.image-container-us {
+    border-radius: 20px;
+    height: 100px;
+} 
 .ig-container {
     display: flex;
     flex-direction: row;
@@ -77,16 +82,31 @@
 
 .viz-with_cap {
     float:left;
-    width:220px;
-    height:220px;
+    width:180px;
+    height:180px;
     position:relative;
     margin:10px;
     cursor:pointer;
 }
 
 .viz-with_cap img{
-    width:220px;
-    height:220px; 
+    width:180px;
+    height:180px; 
+    position:absolute;
+}
+
+.viz-with_cap_us {
+    float:left;
+    width:150px;
+    height:150px;
+    position:relative;
+    margin:10px;
+    cursor:pointer;
+}
+
+.viz-with_cap_us img{
+    width:150px;
+    height:150px; 
     position:absolute;
 }
 
@@ -103,6 +123,7 @@
     background:rgba(0, 0, 0, 0.7);
     position:absolute; 
     opacity:0; 
+    overflow: scroll;
     transition:all 300ms ease-in-out;
    -webkit-transition:all 300ms ease-in-out;
    -moz-transition:all 300ms ease-in-out;
@@ -124,5 +145,8 @@
 }
 
 .viz-with_cap:hover .caption-wrapper{
+    opacity:1;
+}
+.viz-with_cap_us:hover .caption-wrapper{
     opacity:1;
 }

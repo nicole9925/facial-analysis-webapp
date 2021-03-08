@@ -80,6 +80,24 @@ const Info = (props) => {
                     </div>
                 </>
                 )
+            case 'conclusion':
+                return(<>
+                    <div className="background-container">
+                        <p><b>References</b></p>
+                        <ul>
+                            <li>Prediction Models: <a href="https://github.com/rodrigobressan/keras-multi-output-model-utk-face">github</a></li>
+                            <li>Grad-CAM: <a href="https://github.com/rodrigobressan/keras-multi-output-model-utk-face">github</a></li>
+                            <li>Integrated Gradients: <a href="https://www.tensorflow.org/tutorials/interpretability/integrated_gradients">link</a></li>
+                        </ul>
+                        <p><b>Works Cited + Further Reading</b></p>
+                        <ul>
+                            <li><a href="https://www.researchgate.net/figure/Sample-images-from-FairFace-dataset-10_fig4_344373604">Understanding Fairness of Gender Classification Algorithms Across Gender-Race Groups</a></li>
+                            <li><a href="https://www.nature.com/articles/d41586-020-03186-4">Is facial recognition too biased to be let loose?</a></li>
+                            <li><a href="https://www.nytimes.com/2020/01/12/technology/facial-recognition-police.html">How the Police Use Facial Recognition, and Where It Falls Short</a></li>
+                        </ul>
+                    </div>
+                    
+                </>)
             default:
                 return (
                     <>

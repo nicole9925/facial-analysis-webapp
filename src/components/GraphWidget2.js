@@ -68,6 +68,16 @@ const GraphWidget2 = (props) => {
                     colors={props.plotData2["colors"]} />
                 </>
             )
+        case "conclusion":
+            return(
+                <>
+                    <div className="conclusion-info">
+                        <p><b>For more information:</b> <br/><br/> Check out our <a href="https://michael4706.github.io/XAI_Website/reference/" style={{color: "white"}}>blog</a>.</p>
+                        
+                        <p><b>To view our report:</b> <br/><br/>Click here to download.</p>
+                    </div>
+                </>
+            )
         default:
             return null
 

@@ -16,6 +16,17 @@ function Home() {
   const [data, setData] = useState(background)
   const [plotData1, setPlotData1] = useState(accuracy.unbiased)
   const [plotData2, setPlotData2] = useState(accuracy.biased)
+  const [width, setWidth] = useState(window.innerWidth)
+
+  const notDesktop = width <= 1050;
+
+  if (notDesktop) {
+    return (
+      <>
+        <p className="desktop-warning"> This app only works on desktops. Please increase your window size and refresh to view page. </p>
+      </>
+    )
+  }
   return (
     <>
     <header>

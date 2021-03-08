@@ -78,7 +78,16 @@ const GuideBox = (props) => {
                 return ( <>
                     <div className="guide-bounding">
                         <div className="guide-split">
-                            <button className = "prev-page submit" onClick={() => props.setProgress("Analysis")}>←</button>
+                            <Guide key = {props.progress} className="guide" progress={props.progress}></Guide>
+                            <button className = "next-page submit" onClick={() => props.setProgress("conclusion")}>→</button>
+                        </div>
+                    </div>
+                </>
+                )
+            case 'conclusion':
+                return ( <>
+                    <div className="guide-bounding">
+                        <div className="guide-split">
                             <Guide key = {props.progress} className="guide" progress={props.progress}></Guide>
                         </div>
                     </div>
