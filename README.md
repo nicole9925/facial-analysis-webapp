@@ -5,10 +5,11 @@ This is a web application that accepts an image of a face, analyzes the image, a
 
 ## Usage
 
-Be sure that you have [node.js](https://www.npmjs.com/get-npm).
-
-1. Run `npm install` to download dependencies in repository directory in command line
-2. Run `npm start`
-3. Download python dependencies using `pip install -r requirements.txt`
-4. To start the server, run `python3 src/api/index.py` on another tab in the repository
-
+note: Make sure you have Python version less than 3.9
+1. Create a virtual environment with the command: `conda create -n virtual_env_name python=3.7`
+2. Activate your virtual environment by typing: `source activate virtual_env_name`
+3. Make sure you have [node.js](https://www.npmjs.com/get-npm) installed. For mac users, you can just do `brew install node`
+4. Download python dependencies using `pip install -r requirements.txt`
+5. Run `npm install` to download dependencies in repository directory in command line
+6. Run `npm start`
+7. In another tab (cd to the repo) and start the server by running `python3 src/api/index.py` 
