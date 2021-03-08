@@ -11,7 +11,7 @@ Optional but recommended:
 1. Create a virtual environment with the command: `conda create -n virtual_env_name python=3.7` or `virtualenv -p python3 virtual_env_name`
 2. Activate your virtual environment by typing: `source activate virtual_env_name`
 
-To run:
+To run:<br>
 3. Make sure you have [node.js](https://www.npmjs.com/get-npm) installed. For mac users, you can just do `brew install node`<br>
 4. Download python dependencies using `pip install -r requirements.txt`<br>
 5. Run `npm install` to download dependencies in repository directory in command line<br>
