@@ -1,3 +1,4 @@
+CMake
 Flask
 tensorflow
 cython
@@ -8,7 +9,6 @@ Pillow
 python-dotenv
 pandas
 matplotlib
-cmake
 seaborn
 gunicorn
 dlib
