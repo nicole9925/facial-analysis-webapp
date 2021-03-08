@@ -5,7 +5,7 @@ This is a web application that accepts an image of a face, analyzes the image, a
 
 ## Usage
 
-note: Make sure you have Python version less than 3.9
+note: Make sure you have Python 3.7
 
 Optional but recommended:
 1. Create a virtual environment with the command: `conda create -n virtual_env_name python=3.7` or `virtualenv -p python3 virtual_env_name`
