@@ -13,7 +13,7 @@ Optional but recommended:
 
 To run:
 3. Make sure you have [node.js](https://www.npmjs.com/get-npm) installed. For mac users, you can just do `brew install node`<br>
-4. Download python dependencies using `pip install -r requirements.txt`
-5. Run `npm install` to download dependencies in repository directory in command line
-6. Run `npm start`
-7. In another tab (cd to the repo) and start the server by running `python3 src/api/index.py` 
+4. Download python dependencies using `pip install -r requirements.txt`<br>
+5. Run `npm install` to download dependencies in repository directory in command line<br>
+6. Run `npm start`<br>
+7. In another tab (cd to the repo) and start the server by running `python3 src/api/index.py` <br>
