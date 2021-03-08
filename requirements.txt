@@ -1,5 +1,5 @@
 Flask
-tensorflow-cpu
+tensorflow
 cython
 Keras
 opencv-python
