@@ -12,7 +12,7 @@ Optional but recommended:
 2. Activate your virtual environment by typing: `source activate virtual_env_name`
 
 To run:
-3. Make sure you have [node.js](https://www.npmjs.com/get-npm) installed. For mac users, you can just do `brew install node`
+3. Make sure you have [node.js](https://www.npmjs.com/get-npm) installed. For mac users, you can just do `brew install node`<br>
 4. Download python dependencies using `pip install -r requirements.txt`
 5. Run `npm install` to download dependencies in repository directory in command line
 6. Run `npm start`
