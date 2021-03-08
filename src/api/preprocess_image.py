@@ -38,10 +38,10 @@ def detect_face(img, default_max_size=800,size = 224, padding = 0.25):
     dets = cnn_face_detector(img, 1)
     num_faces = len(dets)
     if num_faces == 0:
-        print("Sorry, there were no faces found in '{}'".format(image_path))
+        print("Sorry, there were no faces found in")
         return
     elif num_faces > 1:
-        print("Multiple face in '{}'. A random face will be returned".format(image_path))
+        print("Multiple faces detected. A random face will be returned")
     faces = dlib.full_object_detections()
     for detection in dets:
         rect = detection.rect

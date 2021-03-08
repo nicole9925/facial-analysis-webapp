@@ -318,7 +318,7 @@ const Upload = (props) => {
                                         <div className="caption-wrapper">
                                             <p>Web Application</p>
                                             <p>
-                                            Contact: <a href="www.linkedin.com/in/nicole-mandy-lee">here</a>
+                                            Contact: <a href="https://www.linkedin.com/in/nicole-mandy-lee">here</a>
                                             </p>
                                         </div>
                                     </div>
